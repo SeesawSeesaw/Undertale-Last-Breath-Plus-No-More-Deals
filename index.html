@@ -108,9 +108,6 @@
         image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
         image-rendering: pixelated;                 /* Awesome future-browsers       */
         -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-        min-width: 50%;
-        max-width: 50%;
-        align-self: center;
       }
 
       canvas.active {
@@ -570,7 +567,7 @@
     </div>
     <!-- The wallpaper config is displayed in an iframe to make it possible to use keyboard for entering values (it's consumed by
         the runner in the original document). -->
-    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank"></iframe>
+    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank" style="max-width: 50vw; width: 100%; height: 100%;"></iframe>
 
     <div id="message-container">
       <div id="messages">
