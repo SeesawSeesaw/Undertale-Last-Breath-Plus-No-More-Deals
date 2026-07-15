@@ -1017,10 +1017,10 @@
           newHeight = newWidth / startingAspect;
         }
 
-        canvasElement.style.height = "px";
-        canvasElement.style.width = "px";
-        canvasElement.width = 1980;
-        canvasElement.height = 1440;
+        canvasElement.style.height = newHeight + "px";
+        canvasElement.style.width = newWidth + "px";
+        canvasElement.width = 640;
+        canvasElement.height = 480;
       }
 
       function pause() { // Don't change the name - GX Mobile calls it when the app becomes inactive.
