@@ -96,6 +96,7 @@
         border: 20px;
         background-color: black;
         position: relative;
+        transform-origin: center center;
         transition: opacity 5s ease-in;
         -webkit-transition: opacity 5s ease-in;
         opacity: 0;
@@ -997,6 +998,7 @@
 
         canvasElement.classList.add("active");
 
+        const gameScale = 1.12;
         const maxWidth = window.innerWidth * 1.5;
         const maxHeight = window.innerHeight;
         var newHeight, newWidth;
@@ -1017,6 +1019,8 @@
 
         canvasElement.style.height = newHeight + "px";
         canvasElement.style.width = newWidth + "px";
+        canvasElement.style.transform = `scale(${gameScale})`;
+        canvasElement.style.transformOrigin = "center center";
       }
 
       function pause() { // Don't change the name - GX Mobile calls it when the app becomes inactive.
