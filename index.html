@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>GXC Game</title>
+	<!-- For Favicons -->
+    <link rel="icon" type="x-icon" href="favicon.png">
+	<!-- For Page Title -->
+    <title>Pizza Tower 1.1.0 Web Port</title>
     <style>
       @-webkit-keyframes rotation {
         from {
@@ -47,7 +50,7 @@
       }
 
       html {
-        background: #060612;
+        background: #FFFFFF;
       }
 
       body {
@@ -57,17 +60,18 @@
         min-height: 100vh;
         min-height: -webkit-fill-available;
         min-height: fill-available;
-        min-height: 100svh; /* Otherwise contents can be covered by an address bar in Safari on iOS 15 */
+        min-height: 100vh; /* Otherwise contents can be covered by an address bar in Safari on iOS 15 */
         min-width: 100vw;
         background: radial-gradient(
           56.63% 56.63% at 50% 43.37%,
-          #1c1726 0%,
-          #060612 100%
+          transparent 0%,
+          transparent 100%
         );
+		background-color: black;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
-        place-items: center;
+		place-items: center;
       }
 
       body.scrollingDisabled {
@@ -81,20 +85,18 @@
 
       div.emscripten {
         text-align: center;
+		font-family: "Lucida Console", Monaco, monospace;
       }
 
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten {
         display: none;
-        border: 0px none;
         background-color: black;
-        position: relative;
+        position: flex;
         transition: opacity 5s ease-in;
         -webkit-transition: opacity 5s ease-in;
         opacity: 0;
         filter: blur(0) grayscale(0);
-        margin-top: auto;
-        margin-bottom: auto;
         image-rendering: optimizeSpeed;             /* Older versions of FF          */
         image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
         image-rendering: -webkit-optimize-contrast; /* Safari                        */
@@ -157,24 +159,6 @@
         border-radius: 100%;
       }
 
-      .floating-control {
-        position: absolute;
-        display: none;
-        border: none;
-
-        left: 0px;
-        top: 0px;
-        width: 400px;
-        height: 100%;
-        padding: 10px;
-
-        font-family: monospace;
-        font-size: 8;
-        color: white;
-        background: rgba(53, 18, 84, 0.8);
-        box-shadow: rgb(9 8 13 / 20%) -2px 2px 4px, rgb(9 8 13 / 40%) -4px 4px 16px;
-      }
-
       #status {
         display: inline-block;
         vertical-align: top;
@@ -232,7 +216,9 @@
         border-radius: 5px;
         cursor: pointer;
         background-color: black;
-        color: #20c20e;
+        color: white;
+		outline-color: #20c20e;
+		outline-style: dashed;
         font-family: "Lucida Console", Monaco, monospace;
       }
 
@@ -340,95 +326,8 @@
       #pauseMenu button[hidden] {
         display: none;
       }
-
-      .graph .labels.x-labels {
-        background-color: white;
-        text-anchor: middle;
-      }
-
-      .graph .labels.y-labels {
-        text-anchor: end;
-      }
-
-      .graph {
-        font-family: Averta, -apple-system, "Segoe UI", system-ui, sans-serif;
-        font-feature-settings: "tnum", "lnum";
-        font-style: normal;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 21px;
-        text-decoration-line: none;
-        letter-spacing: 0.25px;
-        background-color: transparent;
-        fill: #ccc;
-      }
-
-      .graph .grid {
-        stroke: #ccc;
-        stroke-dasharray: 0;
-        stroke-width: 1;
-      }
-
-      .labels {
-        font-size: 4px;
-      }
-
-      .label-title {
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 4px;
-      }
-
-      .peer0 {
-        fill: #fa1f4e;
-        stroke: #fa1f4e;
-      }
-      .peer1 {
-        fill: #a970ff;
-        stroke: #a970ff;
-      }
-      .peer2 {
-        fill: #4574ee;
-        stroke: #4574ee;
-      }
-      .peer3 {
-        fill: #c3ff6f;
-        stroke: #c3ff6f;
-      }
-
-      .peer {
-        stroke-width: 0;
-      }
-
-      .peer-frame-delay {
-        fill: none;
-        stroke-width: 1;
-      }
-
-      .acceptable-rollback-button {
-        border: none;
-        width: 50px;
-        height: 25px;
-        margin: 5px;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: black;
-        color: #20c20e;
-        font-family: "Lucida Console", Monaco, monospace;
-      }
-
-      .peer-acceptable-rollback {
-        fill: none;
-        stroke-width: 1;
-        opacity: 0.3;
-      }
-
-      .relay-rtt {
-        stroke-width: 2;
-      }
     </style>
   </head>
-
   <body>
     <canvas
       class="emscripten"
@@ -454,119 +353,42 @@
       <div class="emscripten" id="status">Downloading...</div>
 
       <progress value="0" max="100" id="progress" hidden="1"></progress>
-      <img id="QRCode" class="qrCode" src="runner.svg" alt="URL QR Code" hidden="1"></img>
-      <img id="QR2Code" class="qrCode" src="runnerLocal.svg" alt="URL QR2 Code" hidden="1"></img>
     </div>
-
-    <div class="floating-control" id="multiplayer-stats-container">
-      <div class="multiplayer-stats-network" id="multiplayer-stats-network">
-        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="graph" aria-labelledby="title" role="img" viewbox="-20 -10 130 140">
-          <title id="title">Network stats</title>
-          <g class="grid x-grid" id="xGrid">
-            <line x1="0" y1="100" x2="100" y2="100"></line>
-
-            <line x1="12.25" y1="99" x2="12.25" y2="101"></line>
-            <line x1="25" y1="98" x2="25" y2="102"></line>
-            <line x1="37.5" y1="99" x2="37.5" y2="101"></line>
-            <line x1="50" y1="98" x2="50" y2="102"></line>
-            <line x1="62.5" y1="99" x2="62.5" y2="101"></line>
-            <line x1="75" y1="98" x2="75" y2="102"></line>
-            <line x1="87.5" y1="99" x2="87.5" y2="101"></line>
-            <line x1="100" y1="98" x2="100" y2="102"></line>
-          </g>
-          <g class="grid y-grid" id="yGrid">
-            <line x1="0" y1="0" x2="0" y2="100"></line>
-
-            <line x1="-2" y1="0" x2="2" y2="0"></line>
-            <line x1="-1" y1="12.5" x2="1" y2="12.50"></line>
-            <line x1="-2" y1="25" x2="2" y2="25"></line>
-            <line x1="-1" y1="37.5" x2="1" y2="37.5"></line>
-            <line x1="-2" y1="50" x2="2" y2="50"></line>
-            <line x1="-1" y1="62.5" x2="1" y2="62.5"></line>
-            <line x1="-2" y1="75" x2="2" y2="75"></line>
-            <line x1="-1" y1="87.5" x2="1" y2="87.5"></line>
-          </g>
-          <g class="labels x-labels">
-            <text x="0" y="110">-8</text>
-            <text x="25" y="110">-4</text>
-            <text x="50" y="110">0</text>
-            <text x="75" y="110">4</text>
-            <text x="100" y="110">8</text>
-            <text x="50" y="115" class="label-title">Time shift</text>
-          </g>
-          <g class="labels y-labels">
-            <text x="-4" y="0" alignment-baseline="middle">16</text>
-            <text x="-4" y="25" alignment-baseline="middle">12</text>
-            <text x="-4" y="50" alignment-baseline="middle">8</text>
-            <text x="-4" y="75" alignment-baseline="middle">4</text>
-            <text x="-4" y="100" alignment-baseline="middle">0</text>
-            <text x="-10" y="50" class="label-title" alignment-baseline="middle">RTT</text>
-          </g>
-
-          <g id="stats-network-peers">
-          </g>
-
-          <g id="stats-network-peer-frame-delays">
-          </g>
-
-          <g id="stats-network-relay-rtt">
-          </g>
-        </svg>
-      </div>
-      <div>
-        <b>Acceptable rollback frames marker:</b>
-        <div>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(0)">Off</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(1)">+1</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(2)">+2</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(4)">+4</button>
-        </div>
-      </div>
-      <div id="multiplayer-stats">
-        [no stats available]
-      </div>
-    </div>
-    <div class="output-container" id="output-container" style="visibility: hidden">
-      <button class="output-button" onclick="toggleConsole()">
+    <div class="output-container" id="output-container">
+	  <!-- Stock Toggle Console Button -->
+      <button class="output-button" onclick="toggleConsole()" title="Lists Console Output and Loading Progress"+>
         Toggle Console
       </button>
-      <button id="QRButton" class="output-button" onclick="toggleQRCode()">
-        Show QRCode
+	  <!-- Go to Github Repo Button -->
+      <button id="QRButton" class="output-button" onclick="togglegithub()" title="Sends you to My Github Repository of this Project"+>
+        Visit Github Repo
       </button>
-      <button id="QR2Button" class="output-button" onclick="toggleQRCode2()">
-        Show Opera GX QRCode
+	  <!-- CLear Site Cache Button -->
+      <button id="QR2Button" class="output-button" onclick="toggleclear_site_cache()" title="Fixes Crashes due to the Website being Updated, but also Deletes ALL Saves, so Continue with Caution"+>
+        Clear Site Cache
       </button>
-      <!--
-      <button id="webglbutton" class="output-button" onclick="toggleWebGLContext()">
-        Lose WebGL Context
+		<!-- Enable FPS Counter Bookmarklet Button -->
+      <button class="output-button" id="stats-button" onclick="toggleFPS()" title="Enables External FPS Counter"+>
+        Enable FPS Counter
       </button>
-      -->
-      <button class="output-button" id="stats-button" style="visibility: hidden" onclick="toggleElement('multiplayer-stats-container')">
-        Toggle Stats
+	    <!-- Go to Web Port Website Button -->
+      <button class="output-button" id="share-button" onclick="togglewebports()" title="Sends you to My Personal Website with a List of All My Web Ports"+>
+        View All Web Ports
       </button>
-      <button class="output-button" id="share-button" style="visibility: hidden" onclick="navigator.clipboard.writeText(window.shareUrl)">
-        Copy Share Url
+	    <!-- Join Discord Server Button -->
+	  <button class="output-button" onclick="togglejoin_discord()" title="Press to Join My Discord Server for Info and Updates"+>
+        Join Discord Server
       </button>
-      <button class="output-button" id="log-state-button" onclick="log_next_game_state()" style="visibility: hidden">
-        Log State
-      </button>
+	    <!-- Background Color Changer Button -->
+      <input id="colorpicker" type="color" onchange="changecolor(this)" title="Changes Color of the Website's Background"+>
       <textarea id="output" rows="8"></textarea>
     </div>
-
-    <div class="wallpaper-container" id="wallpaper-container" style="display: none">
-      <button class="output-button" onclick="toggleElement('wallpaper-config-iframe')">
-        Toggle configurator
-      </button>
-    </div>
-    <!-- The wallpaper config is displayed in an iframe to make it possible to use keyboard for entering values (it's consumed by
-        the runner in the original document). -->
-    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank"></iframe>
 
     <div id="message-container">
       <div id="messages">
       </div>
     </div>
-
+	<!-- Ads Stuff for games that need it -->
    <script async
      data-ad-client="ca-pub-123"
      data-ad-frequency-hint="30s"
@@ -579,75 +401,14 @@
      const adBreak =  adConfig = function(o) {adsbygoogle.push(o);}
    </script>
 
-    <script id="tick-worker" type="javascript/worker">
-      let running = false;
-      let stop_called = false;
-
-      let intervalMs = 16;
-
-      onmessage = (e) => {
-        if (e.data.run) {
-          intervalMs = Math.floor(1000 / e.data.fps);
-
-          if (!running) {
-            running = true;
-            setTimeout(tick, intervalMs);
-          }
-        } else {
-          stop_called = true;
-        }
-      }
-
-      const tick = () => {
-        if (stop_called) {
-          stop_called = false;
-          running = false;
-
-          return;
-        }
-
-        const start = new Date().getTime();
-        postMessage('');
-        const end = new Date().getTime();
-
-        let next_update = start + intervalMs - end;
-        next_update = Math.max(next_update, 0);
-        setTimeout(tick, next_update);
-      }
-    </script>
-
     <script type="text/javascript">
-      const blob = new Blob([document.querySelector('#tick-worker').textContent]);
-      const worker = new Worker(window.URL.createObjectURL(blob));
-
-      worker.onmessage = function () {
-        GM_tick(performance.now());
-      }
-
-      const isMultiplayer = function () {
-        if (typeof GM_is_multiplayer !== 'function') {
-          return false;
-        }
-
-        return GM_is_multiplayer() !== 0;
-      }
-
-      document.addEventListener('visibilitychange', function () {
-        if (!isMultiplayer()) {
-          return;
-        }
-
-        if (document.visibilityState === 'hidden') {
-          worker.postMessage({run: true, fps: 60});
-        } else {
-          worker.postMessage({run: false});
-        }
-      });
-    </script>
-
-    <script type="text/javascript">
+	// Background Color Changer Function
+	function changecolor(el) {
+		document.body.style.backgroundColor = el.value;
+	}
+	
       const CHANGE_ASPECT_RATIO = true;
-
+		// Main Page Elements
       var bodyElement = document.getElementsByTagName("body")[0];
       var statusElement = document.getElementById("status");
       var progressElement = document.getElementById("progress");
@@ -687,7 +448,11 @@
         rollbackMessages = [];
         messageContainerElement.style.display = 'none';
       };
-
+		
+	  // for displaying contents of console to display as a single line of text
+	  // stopload is set to 0, as to initialize it
+	  var loadprogress = 0;
+		
       var startingHeight, startingWidth;
       var startingAspect;
       var Module = {
@@ -697,17 +462,42 @@
           var element = document.getElementById("output");
           if (element) element.value = ""; // clear browser cache
           return function (text) {
+		  
+		  // for displaying contents of console to display as a single line of text
+		  // if loading has started
+			if (text === "Starting WAD") {
+			// tells if statement below to display ALL loading strings
+				loadprogress += 1;
+			}
+	  
+			// if loading has started
+			if (loadprogress === 1) {
+			// allow console to be displayed as text on-screen
+				Module.setStatus(text);
+			}
+			// if game has started
+			// greater than or equal to just in case
+			else if (loadprogress >= 2) {
+			// then set load text to nothing
+				Module.setStatus("");
+			}
+		    // back to normal shit
+			
             if (arguments.length > 1)
               text = Array.prototype.slice.call(arguments).join(" ");
-            // These replacements are necessary if you render to raw HTML
-            //text = text.replace(/&/g, "&amp;");
-            //text = text.replace(/</g, "&lt;");
-            //text = text.replace(/>/g, "&gt;");
-            //text = text.replace('\n', '<br>', 'g');
+			// for normal console
             console.log(text);
             if (text === "Entering main loop.") {
               // It seems that this text ensures game is loaded.
               ensureAspectRatio();
+			  // below are custom
+			  // stops loading text on game run
+			  loadprogress += 1;
+              // This Forces 1920x1080 aspect ratio on game startup
+              canvas.width = 1920;
+              canvas.height = 1080;
+
+			  // TRUE END of custom shit
             }
             if (element) {
               element.value += text + "\n";
@@ -786,7 +576,10 @@
           Module['arguments'] = [];
         }
       }
-
+	  
+	  // All Button Functions
+	  
+		// Stock Toggle Console Function
       function toggleConsole() {
         var isShown = outputElement.style.display === "flex";
         if (isShown) {
@@ -797,57 +590,53 @@
           outputElement.scrollIntoView(true);
         }
       }
+		// Go To Github Function
+      function togglegithub() {
+	    window.open("https://github.com/burnedpopcorn/Pizza-Tower-1.1.0-Web-Port", '_blank').focus();
+      }
+		// Clear Site Cache Function
+      function toggleclear_site_cache() {
+	  // Trigger Choice Popup
+		if (confirm("This Will Clear Site Cache\nThis will ALSO Clear ALL SAVES\nONLY do this if the Site has recently been Updated\nand if you are experiencing crashes relating to texture loading\nContinue?")) {
+		// User clicked OK
+		
+		// Clear All IndexedDB Databases
+		(async () => {
+			const dbs = await window.indexedDB.databases();
+			dbs.forEach(db => { window.indexedDB.deleteDatabase(db.name) });
+			})();
+			
+		// 
+		alert("All Site Cache Has been Cleared!\nPlease reload the Page");
+		} else {
+		// User clicked Cancel
+		// Do nothing
+		}
+	  }
 
-      function toggleQRCode() {
-        var isShown = !qrElement.hidden;
-        if (isShown) {
-          qrElement.hidden = true;
-          qrButton.innerHTML = "Show QRCode";
-        } else {
-          qrElement.hidden = false;
-          qrButton.innerHTML = "Hide QRCode";
+		// Enable FPS Counter Button
+	  var stopfps = 0;
+      function toggleFPS() {
+	  // to stop it from making multiple instances after 1 has already been made
+	  stopfps += 1
+	  // if pressed ONLY once
+	  if (stopfps === 1) {
+	    window.location.href = "javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()"
         }
-      }
-
-      function toggleQRCode2() {
-        var isShown = !qr2Element.hidden;
-        if (isShown) {
-          qr2Element.hidden = true;
-          qr2Button.innerHTML = "Show Opera GX QRCode";
-        } else {
-          qr2Element.hidden = false;
-          qr2Button.innerHTML = "Hide Opera GX QRCode";
-        }
-      }
-
-      /*
-      var g_extLostContext = null;
-
-      function toggleWebGLContext() {
-        if (g_extLostContext == null) {
-          var canvas = document.getElementById('canvas');
-          var gl = canvas.getContext('webgl2');
-          g_extLostContext = gl.getExtension('WEBGL_lose_context');
-        } // end if
-        var button = document.getElementById("webglbutton");
-        var text = button.textContent || button.innerText;
-        if (text.trim() == "Lose WebGL Context") {
-          g_extLostContext.loseContext();
-          button.textContent = "Restore WebGL Context";
-        } // end if
-        else {
-          g_extLostContext.restoreContext();
-          button.textContent = "Lose WebGL Context";
-          g_extLostContext = null;
-        } // end else
-      }
-      */
-      function toggleElement(id) {
-        var elem = document.getElementById(id);
-        if (elem) {
-          elem.style.display = elem.style.display == 'block' ? 'none' : 'block';
-        }
-      }
+		// so it can't go crazy high, but can't be activated again
+		if (stopfps >= 5) {
+		stopfps = 2;
+		}
+	  }
+	    // Go To Website of Web Ports Function
+	  function togglewebports() {
+		window.open("https://burnedwebsite.vercel.app/projects/", '_blank').focus();
+	  }
+	    // Join Discord Function
+	  function togglejoin_discord() {
+	    window.open("https://discord.gg/3dPTpruHhc", '_blank').focus();
+	  }
+		// End of Button Functions
 
       var g_pWadLoadCallback = undefined;
       function setWadLoadCallback( _wadLoadCallback ) 
@@ -884,6 +673,7 @@
         } // end if
       } // end doJSExceptionHandler
 
+		// Get Files
       function manifestFiles()
       {
         return [ "runner.data",
@@ -893,13 +683,14 @@
 "game.unx" ].join( ";");
       }
 
+		// Verify Files
       function manifestFilesMD5()
       {
-        return [ "b1051921d8fd30c1a2b9b69c42aa31b6",
-"7692d9a00a76685f9f4d65e0f0f66664",
-"07871e9afd7eb36b3cee2526cdf3d8bb",
+        return [ "64c52fe90575bb2e81703999947fd228",
+"8205c033904e1ce761eff28ed921da38",
+"b347cc99e3e72ed83507297e83c8a79e",
 "e8f1e8db8cf996f8715a6f2164c2e44e",
-"0ce70948952e215a42c7cdf7edd0d1fe" ];
+"619c41bf1f2095125e1b3c43c1edd301" ];
       }
 
       function onFirstFrameRendered()
@@ -918,6 +709,7 @@
           }
       }
 
+	// Trigger Ads
     function triggerAd(adId, _callback_beforeAd, _callback_afterAd, _callback_adDismissed, _callback_adViewed, _callback_adbreakDone) {
        // need to take a copy of the RValues represented
        var pRValueCopy = triggerAdPrefix( _callback_beforeAd, _callback_afterAd, _callback_adDismissed, _callback_adViewed, _callback_adbreakDone );
@@ -966,15 +758,6 @@
        });
       }
 
-      function triggerPayment(itemId, _callback_PaymentComplete) {
-        var pRValueCopy = triggerPaymentPrefix(_callback_PaymentComplete);
-        setTimeout(() => {
-          console.log("triggerPayment");
-          doGMLCallback(pRValueCopy, { id:itemId });        
-        }, 1000);
-        triggerPaymentPostfix();
-      }
-
       function ensureAspectRatio() {
         if (canvasElement === undefined) {
           return;
@@ -1011,7 +794,7 @@
         canvasElement.style.height = newHeight + "px";
         canvasElement.style.width = newWidth + "px";
       }
-
+		// To Pause when it detects the Tab is inactive
       function pause() { // Don't change the name - GX Mobile calls it when the app becomes inactive.
         if (!canvasElement.classList.contains("active")) { // Wait for the canvas to load.
           return
@@ -1021,7 +804,7 @@
         pauseMenu.hidden = false;
         canvasElement.classList.add("paused");
       }
-
+		// To Resume when it detects the Tab is Active
       function resume() {
         GM_unpause();
         pauseMenu.hidden = true;
@@ -1062,43 +845,14 @@
           window.oprt.lockPortraitOrientation();
         }
       }
-
-      /* Observe the dimensions of body and ensureAspectRatio of the canvas (whilst taking up maximum space)
-       *
-       * NOTE(robertz):
-       *  We also need to request an Animation Frame to do this, if we do not, resizeObserver might throw error
-       *  "ResizeObserver loop limit exceeded", which means that
-       *  "[...] ResizeObserver was not able to deliver all observations within a single animation frame"
-       *  https://stackoverflow.com/a/50387233 (source).
-       *
-       *  There are different ways to solve the issue, since the error is benign (meaning it wont crash anything)
-       *  we could choose to ignore it via changing the window.onerror method, i.e
-       *  ```
-       *  window.onerror((event)=> {
-       *    if(event==="ResizeObserver loop limit exceeded") {
-       *       return
-       *    }
-       *     ///...rest
-       *  }
-       *  ```
-       *  But for now we request an animationFrame which seems to be the recommended way to go about it.
-       *
-       * NOTE(ddrechny):
-       *  window.innerWidth/Height value updates are sometimes delayed in WebKit on iOS after an orientation
-       *  change. Hence we're calling ensureAspectRatio one more time after a delay to minimize the risk of
-       *  sizing the canvas with outdated values.
-       */
+		// uh, shit that no one cares about
       const resizeObserver = new ResizeObserver(() => {
         window.requestAnimationFrame(ensureAspectRatio);
         setTimeout(() => window.requestAnimationFrame(ensureAspectRatio), 100);
       });
       resizeObserver.observe(document.body);
-
-      /* NOTE(ddrechny):
-       *  Body needs to be scrollable on desktop browsers for debug buttons to be accessible.
-       *  On mobile browsers scrolling can be activated accidentally and debug buttons aren't useful,
-       *  so it's better to disable it.
-       */
+		
+		// Disable Scrolling on Mobile
       if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
         bodyElement.className = "scrollingDisabled";
         canvasElement.classList.add("animatedSizeTransitions");
@@ -1108,8 +862,6 @@
       document.addEventListener("visibilitychange", (event) => {
         if (document.visibilityState != "visible") {
           pause();
-        } else if (isMultiplayer()) {
-          resume();
         }
       });
 
@@ -1123,475 +875,8 @@
         enterFullscreenIfSupported();
         lockOrientationIfSupported();
       });
-
-      var read_ptr = 0;
-      read_int = () => {
-        var heap_slice = Module["HEAPU8"].subarray(read_ptr, read_ptr + 4);
-        var buffer = new ArrayBuffer(4);
-        var barray = new Uint8Array(buffer);
-        for (var i = 0; i < 4; i++) barray[i] = heap_slice[i];
-        var int_array = new Int32Array(buffer);
-        var int = int_array[0];
-        read_ptr += 4;
-        return int;
-      };
-
-      read_pointer = () => {
-        var ptr = Module.getValue(read_ptr, "*");
-        read_ptr += 8;
-        return ptr;
-      };
-
-      readPeer = () => {
-        var peer = {
-          peer: read_int(),
-          local_frames_ahead: read_int(),
-          rtt: read_int(),
-          remote_frame_rate: read_int(),
-          remote_frame_delay: read_int(),
-        }
-
-        return peer;
-      }
-
-      readStats = (s) => {
-        read_ptr = s;
-
-        var stats = {
-          kbps_sent: read_int(),
-          kbps_received: read_int(),
-          pps_sent: read_int(),
-          pps_received: read_int(),
-          frame_rate: read_int(),
-          rollbacks: read_int(),
-          frame_delay: read_int(),
-          skipped_frames: read_int(),
-          rejected_inputs: read_int(),
-          relay_rtt: read_int(),
-          peer: read_int(),
-          num_peers: read_int(),
-
-          serialization_stats: {
-            state_size: read_int(),
-            managed_instances_num: read_int()
-          },
-          peers: []
-        }
-
-        read_ptr = read_pointer();
-        for (var j = 0; j < stats.num_peers; ++j) {
-          stats.peers.push(readPeer());
-        }
-
-        return stats;
-
-      }
-
-      var acceptable_rollback_frames = 0;
-      var set_acceptable_rollback = (frames) => {
-        acceptable_rollback_frames = frames;
-      }
-
-      drawLocal = (peers_elem, frame_delay_elem, relay_rtt_elem, peer_name, relay_rtt, frame_delay) => {
-          drawPeer(peers_elem, frame_delay_elem, peer_name, 0, frame_delay, 0);
-
-          const per_pixel = 100/16;
-          const frames_rtt = relay_rtt/16; // To ceil, or not to ceil - that's the question.
-
-          const y = 100 - frames_rtt * per_pixel;
-
-          const relay_rtt_marker = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          relay_rtt_marker.setAttribute('x1', -2);
-          relay_rtt_marker.setAttribute('y1', y);
-          relay_rtt_marker.setAttribute('x2', 2);
-          relay_rtt_marker.setAttribute('y2', y);
-
-          relay_rtt_marker.setAttribute('data-relay-rtt', relay_rtt);
-
-          relay_rtt_marker.classList.add(peer_name);
-          relay_rtt_marker.classList.add('relay-rtt');
-
-          relay_rtt_elem.appendChild(relay_rtt_marker);
-      }
-
-      drawPeer = (peers_elem, frame_delay_elem, peer_name, rtt, frame_delay, frames_ahead) => {
-        const per_pixel = 100/16;
-        const frames_rtt = rtt/16; // To ceil, or not to ceil - that's the question.
-        const x = 50 + frames_ahead * per_pixel;
-        const y = 100 - frames_rtt * per_pixel;
-
-        const peer = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        peer.setAttribute('cx', x);
-        peer.setAttribute('cy', y);
-        peer.setAttribute('r', 1);
-
-        peer.setAttribute('data-rtt', rtt);
-        peer.setAttribute('data-frame-delay', frame_delay);
-        peer.setAttribute('data-frames-ahead', frames_ahead);
-
-        peer.classList.add(peer_name);
-        peer.classList.add('peer');
-
-        peers_elem.appendChild(peer);
-
-        const peer_frame_delay = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        peer_frame_delay.setAttribute('cx', x);
-        peer_frame_delay.setAttribute('cy', y);
-        peer_frame_delay.setAttribute('r', frame_delay * per_pixel);
-
-        peer_frame_delay.classList.add(peer_name);
-        peer_frame_delay.classList.add('peer-frame-delay');
-
-        frame_delay_elem.appendChild(peer_frame_delay);
-
-        if (acceptable_rollback_frames > 0) {
-          const peer_acceptable_rollback = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          peer_acceptable_rollback.setAttribute('cx', x);
-          peer_acceptable_rollback.setAttribute('cy', y);
-          peer_acceptable_rollback.setAttribute('r', (frame_delay + acceptable_rollback_frames) * per_pixel);
-
-          peer_acceptable_rollback.classList.add(peer_name);
-          peer_acceptable_rollback.classList.add('peer-acceptable-rollback');
-          frame_delay_elem.appendChild(peer_acceptable_rollback);
-        }
-      }
-
-      report_stats = (stats_data) => {
-
-        var stats = readStats(stats_data);
-
-        var peers_elem = document.getElementById("stats-network-peers");
-        var frame_delay_elem = document.getElementById("stats-network-peer-frame-delays");
-        var relay_rtt_elem = document.getElementById("stats-network-relay-rtt");
-
-        peers_elem.innerHTML = '';
-        frame_delay_elem.innerHTML = '';
-        relay_rtt_elem.innerHTML = '';
-
-        stats.peers.forEach(p => {
-          drawPeer(peers_elem, frame_delay_elem, 'peer' + p.peer, p.rtt, p.remote_frame_delay, p.local_frames_ahead);
-        });
-
-        drawLocal(peers_elem, frame_delay_elem, relay_rtt_elem, 'peer' + stats.peer, stats.relay_rtt, stats.frame_delay);
-      }
-
-      let wallpaperConfig = {};
-      const wallpaperConfigKey = 'wallpaper-config';
-
-      function wallpaper_init_config_controls(definitions) {
-        const wallpaperContainer = document.getElementById("wallpaper-container");
-        wallpaperContainer.style.display = "block";
-
-        let configStyle = '<style type="text/css">' +
-          'body { color: white; font-family: Averta, -apple-system, "Segoe UI", system-ui, sans-serif; font-style: normal; font-size: 10px; }' +
-          '.config-row { display: flex; justify-content: flex-start; align-items: center; padding: .5em; }' +
-          '.config-row > label { flex: 1 }' +
-          '.config-row > input { flex: initial; }' +
-          '.config-row > textarea { flex: 1; }' +
-          '.config-row-label { font-size: 12px; font-weight: 600; }' +
-          'button { padding: 8px 16px; border-radius: 4px; background-color: unset; border-color: rgb(199, 159, 234); color: rgb(199, 159, 234); }' +
-          '</style>';
-        let configHTML = '<html><head><title></title>' + configStyle + '</head><body>' +
-          '<div class="wallpaper-header"><h1>Live Wallpaper Configurator</h1><button id="wallpaper-reset-parameters">Reset parameters</button></div>' +
-          '<div class="wallpaper-config" id="wallpaper-config"></div>' +
-          '</body></html>'
-
-        const wallpaperConfigDocument = document.getElementById("wallpaper-config-iframe").contentDocument;
-        wallpaperConfigDocument.open();
-        wallpaperConfigDocument.write(configHTML);
-        wallpaperConfigDocument.close();
-
-        const storedConfig = JSON.parse(localStorage.getItem(wallpaperConfigKey));
-        if (storedConfig) {
-          wallpaperConfig = storedConfig;
-        }
-
-        const configElement = wallpaperConfigDocument.getElementById("wallpaper-config");
-        const resetButton = wallpaperConfigDocument.getElementById("wallpaper-reset-parameters");
-        resetButton.addEventListener("click", (e) => {
-          wallpaper_reset_config();
-          wallpaperConfig = {};
-          add_config_elems(configElement, definitions);
-          notify_config_change();
-        }, false);
-
-        add_config_elems(configElement, definitions);
-        notify_config_change();
-      }
-
-      function add_config_elems(configElement, definitions) {
-        while (configElement.hasChildNodes()) {
-          configElement.removeChild(configElement.lastChild);
-        }
-
-        definitions.value
-          .map(d => create_elems(d, wallpaperConfig, ""))
-          .filter(e => e !== null && e !== undefined)
-          .map(e => configElement.appendChild(e));
-      }
-
-      function create_elems(definition, config, prefixId) {
-          if (definition.type === undefined || definition.name === undefined) {
-            console.log("missing definition name or type for: ", definition);
-            return null;
-          }
-
-          if  (definition.type === "section") {
-            return create_section_elem(definition, config, prefixId);
-          }
-
-
-          if (definition.value === undefined ) {
-            console.log("missing definition value for: ", definition);
-            return null;
-          }
-
-          if (definition.type === "range") {
-            return create_range_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "boolean") {
-            return create_checkbox_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "color" || definition.type === "colour") {
-            return create_color_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "string") {
-            return create_text_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "string_multiline") {
-            return create_multiline_text_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "select") {
-            return create_select_elem(definition, config, prefixId);
-          }
-
-          if (definition.type === "file" || definition.type === "folder") {
-            return create_not_supported_elem(definition, config);
-          }
-          
-          console.log("missing config value for: ", definition);
-          return null;
-      }
-
-      function create_section_elem(definition, config, prefixId) {
-        const divElem = document.createElement("div");
-
-        const headerElem = document.createElement("h2");
-        headerElem.innerHTML = definition.label;
-
-        divElem.appendChild(headerElem);
-
-        const sectionId = prefixId + definition.name + "-"
-        if (!config[definition.name]) {
-          config[definition.name] = {};
-        }
-
-        definition.children
-          .map(c => create_elems(c, config[definition.name], sectionId))
-          .filter(e => e !== null && e !== undefined)
-          .map(e => divElem.appendChild(e));
-
-        return divElem;
-      }
-
-      function get_initial_value(definition, config) {
-        let value =  definition.value;
-        const configValue = config[definition.name];
-        if (configValue && (typeof(configValue) === typeof(value))) {
-          value = configValue;
-        }
-
-        return value;
-      }
-
-      function wrap_with_label(inputElem, definition, prefixId) {
-        const controlElem = document.createElement("div");
-        controlElem.classList.add(definition.name + "-control");
-        controlElem.classList.add("config-row");
-
-        const labelElem = document.createElement("label");
-        labelElem.htmlFor = prefixId + definition.name;
-        labelElem.innerHTML = "<span class='config-row-label'>" + (definition.label || definition.name) + "</span>";
-        if (definition.description) {
-          labelElem.innerHTML += "<p>" + definition.description + "</p>";
-        }
-        controlElem.appendChild(labelElem);
-
-        inputElem.id = prefixId + definition.name;
-        controlElem.appendChild(inputElem);
-
-        return controlElem;
-      }
-
-      function create_range_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const valueElem = document.createElement("span");
-        valueElem.style = "margin: 0.5em";
-        valueElem.innerHTML = "(" + value + ")";
-
-        const stepElem = document.createElement("input");
-        stepElem.id = prefixId + definition.name;
-        stepElem.type = "range";
-        stepElem.min = definition.min || 0;
-        stepElem.max = definition.max || 100;
-        stepElem.step = definition.step || 1;
-        stepElem.value = value;
-
-        config[definition.name] = value;
-        function range_value_updated(e) {
-          const valueUpdate = Number(e.target.value);
-          config[definition.name] = valueUpdate;
-          valueElem.innerHTML = "(" + valueUpdate + ")";
-
-          notify_config_change();
-        }
-
-        stepElem.addEventListener("change", range_value_updated, false);
-        stepElem.addEventListener("input", range_value_updated, false);
-
-        const valueWrapper = document.createElement("span");
-        valueWrapper.appendChild(valueElem);
-        valueWrapper.appendChild(stepElem);
-
-        return wrap_with_label(valueWrapper, definition, prefixId);
-      }
-
-      function create_checkbox_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const checkboxElem = document.createElement("input");
-        checkboxElem.type = "checkbox";
-        checkboxElem.checked = value;
-        
-        config[definition.name] = value;
-        checkboxElem.addEventListener("change", (e) => {
-          const valueUpdate = Boolean(e.target.checked);
-          config[definition.name] = valueUpdate;
-          notify_config_change();
-        });
-
-        return wrap_with_label(checkboxElem, definition, prefixId);
-      }
-
-      function create_color_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const bgrColor = value;
-        const r = (bgrColor & 0x0000ff);
-        const g = (bgrColor & 0x00ff00) >> 8;
-        const b = (bgrColor & 0xff0000) >> 16;
-        const rgbColor = (r << 16) + (g << 8) + b;
-        const color = "#" + rgbColor.toString(16).padStart(6, '0');
-
-        const colorElem = document.createElement("input");
-        colorElem.type = "color";
-        colorElem.value = color;
-
-        config[definition.name] = value;
-        function color_value_updated(e) {
-          const color = e.target.value;
-          const rgbColor = parseInt(color.slice(1), 16);
-          const r = (rgbColor & 0xff0000) >> 16;
-          const g = (rgbColor & 0x00ff00) >> 8;
-          const b = (rgbColor & 0x0000ff);
-          const bgrColor = (b << 16) + (g << 8) + r;
-
-          config[definition.name] = bgrColor;
-          notify_config_change();
-        }
-
-        colorElem.addEventListener("change", color_value_updated, false);
-        colorElem.addEventListener("input", color_value_updated, false);
-        
-        return wrap_with_label(colorElem, definition, prefixId);
-      }
-
-      function create_text_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const textElem = document.createElement("input");
-        textElem.type = "text";
-        textElem.value = value;
-        console.log("text", value)
-        if (definition.max_length && definition.max_length > 0) {
-          textElem.maxLength = definition.max_length;
-        }
-
-        config[definition.name] = value;
-        textElem.addEventListener("input", (e) => {
-          config[definition.name] = e.target.value;
-          notify_config_change();
-        });
-        
-        return wrap_with_label(textElem, definition, prefixId);
-      }
-
-      function create_multiline_text_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const textareaElem = document.createElement("textarea");
-        textareaElem.rows = 5;
-        textareaElem.cols = 50;
-        textareaElem.value = value;
-        if (definition.max_length && definition.max_length > 0) {
-          textareaElem.maxLength = definition.max_length;
-        }
-
-        config[definition.name] = value;
-        textareaElem.addEventListener("input", (e) => {
-          config[definition.name] = e.target.value;
-          notify_config_change();
-        });
-        
-        return wrap_with_label(textareaElem, definition, prefixId);
-      }
-
-      function create_select_elem(definition, config, prefixId) {
-        const value = get_initial_value(definition, config);
-
-        const selectElem = document.createElement("select");
-        selectElem.value = value;
-        
-        const options = definition.options || [];
-        options.forEach(o => {
-          const option = document.createElement("option");
-          option.value = o;
-          option.text = o;
-          option.selected = o == value ? "selected" : "";
-          selectElem.appendChild(option);
-        })
-
-        config[definition.name] = value;
-        selectElem.addEventListener("change", (e) => {
-          e.selected = "selected";
-          config[definition.name] = e.target.value;
-          notify_config_change();
-        });
-        
-        return wrap_with_label(selectElem, definition, prefixId);
-      }
-
-      function create_not_supported_elem(definition, config, prefixId) {
-        const labelElem = document.createElement("label");
-        labelElem.innerHTML = "Not supported in browser";
-
-        config[definition.name] = definition.value;
-        return wrap_with_label(labelElem, definition, prefixId);
-      }
-
-      function notify_config_change() {
-        console.log(wallpaperConfig)
-        localStorage.setItem(wallpaperConfigKey, JSON.stringify(wallpaperConfig));
-
-        wallpaper_update_config(JSON.stringify(wallpaperConfig));
-      }
     </script>
+	<!-- Load Main Game Runner JS File -->
     <script async type="text/javascript" src="runner.js"></script>
   </body>
 </html>
