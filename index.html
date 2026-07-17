@@ -4,8 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Undertale LBXNMD</title>
-    <link rel="stylesheet" type="text/css" href="../screen-adjust.css" alt="/style.css">
+    <title>GXC Game</title>
     <style>
       @-webkit-keyframes rotation {
         from {
@@ -47,12 +46,6 @@
         }
       }
 
-      .container::-webkit-scrollbar {
-        display: none;
-        scrollbar-color: #000000;
-        scrollbar-width: 0;
-      }
-
       html {
         background: #060612;
       }
@@ -92,11 +85,10 @@
 
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten {
-        display: inline-block;
-        border: 20px;
+        display: none;
+        border: 0px none;
         background-color: black;
         position: relative;
-        transform-origin: center center;
         transition: opacity 5s ease-in;
         -webkit-transition: opacity 5s ease-in;
         opacity: 0;
@@ -443,7 +435,6 @@
       id="canvas"
       oncontextmenu="event.preventDefault()"
       tabindex="-1"
-      style="position: absolute; width: 100%; height: 100%; "
     >
     </canvas>
     <div id="pauseMenuContainer" hidden>
@@ -569,7 +560,7 @@
     </div>
     <!-- The wallpaper config is displayed in an iframe to make it possible to use keyboard for entering values (it's consumed by
         the runner in the original document). -->
-    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank" ></iframe>
+    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank"></iframe>
 
     <div id="message-container">
       <div id="messages">
@@ -1016,8 +1007,9 @@
           newWidth = maxWidth;
           newHeight = newWidth / startingAspect;
         }
-        canvasElement.width = 100 + "px";
-        canvasElement.height = 100 + "px";
+
+        canvasElement.style.height = newHeight + "px";
+        canvasElement.style.width = newWidth + "px";
       }
 
       function pause() { // Don't change the name - GX Mobile calls it when the app becomes inactive.
